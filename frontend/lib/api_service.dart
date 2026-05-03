@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'models.dart';
 
 class ApiService {
-  static String baseUrl = 'http://192.168.1.66:5000';
+  static String baseUrl = 'https://tijo-expense-tracker-1.onrender.com';
 
   static Future<List<Expense>> getExpenses() async {
     try {
