@@ -62,7 +62,7 @@ Tijo_Expense_Tracker/
 5. Go to **Environment Variables** settings in Render and add:
    - Key: `GOOGLE_CREDENTIALS`
    - Value: (Paste your exact JSON service account credentials string here)
-6. Once deployed, Render will provide your public server URL, for example: `https://tijo-expense-tracker-1.onrender.com`.
+6. Once deployed, Render will provide your public server URL, for example: `https://abc-1.onrender.com`.
 
 ---
 
@@ -74,7 +74,7 @@ Tijo_Expense_Tracker/
 ### Local Configuration
 1. Open `frontend/lib/api_service.dart` and update the `baseUrl` to point exactly to your newly deployed Render/PythonAnywhere server URL:
    ```dart
-   static String baseUrl = 'https://tijo-expense-tracker-1.onrender.com';
+   static String baseUrl = 'https://abc-1.onrender.com';
    ```
 
 2. Open terminal in the `frontend` folder and download the required Flutter packages:
