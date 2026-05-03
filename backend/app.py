@@ -18,7 +18,7 @@ except ImportError:
     GSPREAD_AVAILABLE = False
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*", "allow_headers": ["Content-Type", "Authorization"]}})
 
 DB_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'db.json')
 db_lock = threading.Lock()
