@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'models.dart';
 import 'api_service.dart';
 
@@ -13,6 +14,28 @@ class AppState extends ChangeNotifier {
   bool _isAuthenticated = false;
   double _savings = 0.0;
   List<Gift> _gifts = [];
+
+  AppState() {
+    _loadAuthStatus();
+  }
+
+  Future<void> _loadAuthStatus() async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('auth_token');
+      if (token != null && token.isNotEmpty) {
+        ApiService.token = token;
+        _isAuthenticated = true;
+        await fetchData();
+      }
+    } catch (e) {
+      print('Load auth error: $e');
+    }
+    _isLoading = false;
+    notifyListeners();
+  }
 
   List<Expense> get expenses => _expenses;
   Map<String, double> get limits => _limits;
@@ -58,8 +81,14 @@ class AppState extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
     final res = await ApiService.login(username, password);
-    if (res) {
+    if (res && ApiService.token != null) {
       _isAuthenticated = true;
+      try {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('auth_token', ApiService.token!);
+      } catch (e) {
+        print('Save auth error: $e');
+      }
       await fetchData();
     }
     _isLoading = false;
