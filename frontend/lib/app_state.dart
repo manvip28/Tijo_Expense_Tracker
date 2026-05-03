@@ -10,6 +10,7 @@ class AppState extends ChangeNotifier {
   double _salary = 30000.0;
   int _streak = 3;
   bool _isLoading = false;
+  bool _isAuthenticated = false;
   double _savings = 0.0;
   List<Gift> _gifts = [];
 
@@ -20,6 +21,7 @@ class AppState extends ChangeNotifier {
   double get salary => _salary;
   int get streak => _streak;
   bool get isLoading => _isLoading;
+  bool get isAuthenticated => _isAuthenticated;
   double get savings => _savings;
   List<Gift> get gifts => _gifts;
 
@@ -51,6 +53,19 @@ class AppState extends ChangeNotifier {
   double get thisMonthBalance => _salary - thisMonthSpent + thisMonthIncome;
 
   double get totalSavings => _savings;
+
+  Future<bool> login(String username, String password) async {
+    _isLoading = true;
+    notifyListeners();
+    final res = await ApiService.login(username, password);
+    if (res) {
+      _isAuthenticated = true;
+      await fetchData();
+    }
+    _isLoading = false;
+    notifyListeners();
+    return res;
+  }
 
   Future<void> fetchData() async {
     _isLoading = true;

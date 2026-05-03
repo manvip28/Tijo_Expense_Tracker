@@ -341,6 +341,34 @@ def save_db(data):
         threading.Thread(target=_async_sheets_sync, args=(data_copy,), daemon=True).start()
 
 # ----------------- API Endpoints -----------------
+from werkzeug.security import generate_password_hash, check_password_hash
+
+APP_USERNAME = os.getenv("APP_USERNAME", "manvi")
+APP_PASSWORD_HASH = os.getenv("APP_PASSWORD_HASH")
+if not APP_PASSWORD_HASH:
+    plain_pw = os.getenv("APP_PASSWORD", "password123")
+    APP_PASSWORD_HASH = generate_password_hash(plain_pw)
+
+APP_TOKEN = "secret-tijo-token-abc"
+
+@app.before_request
+def before_request():
+    if request.method == "OPTIONS":
+        return
+    if request.path == "/login":
+        return
+    auth_header = request.headers.get("Authorization")
+    if not auth_header or auth_header != f"Bearer {APP_TOKEN}":
+        return jsonify({"success": False, "message": "Unauthorized"}), 401
+
+@app.route('/login', methods=['POST'])
+def login():
+    req = request.json or {}
+    username = req.get('username')
+    password = req.get('password')
+    if username == APP_USERNAME and check_password_hash(APP_PASSWORD_HASH, password):
+        return jsonify({"success": True, "token": APP_TOKEN})
+    return jsonify({"success": False, "message": "Invalid username or password"}), 401
 
 @app.route('/get-expenses', methods=['GET'])
 def get_expenses():

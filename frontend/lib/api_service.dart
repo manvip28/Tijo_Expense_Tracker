@@ -4,10 +4,34 @@ import 'models.dart';
 
 class ApiService {
   static String baseUrl = 'https://tijo-expense-tracker-1.onrender.com';
+  static String? token;
+
+  static Map<String, String> get _headers => {
+    'Content-Type': 'application/json',
+    if (token != null) 'Authorization': 'Bearer $token',
+  };
+
+  static Future<bool> login(String username, String password) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/login'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({'username': username, 'password': password}),
+      );
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        token = data['token'];
+        return true;
+      }
+    } catch (e) {
+      print('Login error: $e');
+    }
+    return false;
+  }
 
   static Future<List<Expense>> getExpenses() async {
     try {
-      final response = await http.get(Uri.parse('$baseUrl/get-expenses'));
+      final response = await http.get(Uri.parse('$baseUrl/get-expenses'), headers: _headers);
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
         return data.map((json) => Expense.fromJson(json)).toList();
@@ -29,7 +53,7 @@ class ApiService {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/add-expense'),
-        headers: {'Content-Type': 'application/json'},
+        headers: _headers,
         body: json.encode({
           'amount': amount,
           'category': category,
@@ -52,7 +76,7 @@ class ApiService {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/delete-expense'),
-        headers: {'Content-Type': 'application/json'},
+        headers: _headers,
         body: json.encode({'id': id}),
       );
       if (response.statusCode == 200) {
@@ -76,7 +100,7 @@ class ApiService {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/update-expense'),
-        headers: {'Content-Type': 'application/json'},
+        headers: _headers,
         body: json.encode({
           'id': id,
           'amount': amount,
@@ -98,7 +122,7 @@ class ApiService {
 
   static Future<Map<String, double>> getLimits() async {
     try {
-      final response = await http.get(Uri.parse('$baseUrl/get-limits'));
+      final response = await http.get(Uri.parse('$baseUrl/get-limits'), headers: _headers);
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body);
         return data.map((key, value) => MapEntry(key, (value as num).toDouble()));
@@ -113,7 +137,7 @@ class ApiService {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/set-limits'),
-        headers: {'Content-Type': 'application/json'},
+        headers: _headers,
         body: json.encode(limits),
       );
       if (response.statusCode == 200) {
@@ -129,7 +153,7 @@ class ApiService {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/delete-limit'),
-        headers: {'Content-Type': 'application/json'},
+        headers: _headers,
         body: json.encode({'category': category}),
       );
       if (response.statusCode == 200) {
@@ -143,7 +167,7 @@ class ApiService {
 
   static Future<double> getSavings() async {
     try {
-      final response = await http.get(Uri.parse('$baseUrl/get-savings'));
+      final response = await http.get(Uri.parse('$baseUrl/get-savings'), headers: _headers);
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return (data['savings'] as num?)?.toDouble() ?? 0.0;
@@ -158,7 +182,7 @@ class ApiService {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/update-savings'),
-        headers: {'Content-Type': 'application/json'},
+        headers: _headers,
         body: json.encode({'savings': amount}),
       );
       if (response.statusCode == 200) {
@@ -172,7 +196,7 @@ class ApiService {
 
   static Future<double> getSalary() async {
     try {
-      final response = await http.get(Uri.parse('$baseUrl/get-salary'));
+      final response = await http.get(Uri.parse('$baseUrl/get-salary'), headers: _headers);
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return (data['salary'] as num?)?.toDouble() ?? 30000.0;
@@ -187,7 +211,7 @@ class ApiService {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/update-salary'),
-        headers: {'Content-Type': 'application/json'},
+        headers: _headers,
         body: json.encode({'salary': amount}),
       );
       if (response.statusCode == 200) {
@@ -201,7 +225,7 @@ class ApiService {
 
   static Future<List<Gift>> getGifts() async {
     try {
-      final response = await http.get(Uri.parse('$baseUrl/get-gifts'));
+      final response = await http.get(Uri.parse('$baseUrl/get-gifts'), headers: _headers);
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
         return data.map((json) => Gift.fromJson(json)).toList();
@@ -216,7 +240,7 @@ class ApiService {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/add-gift'),
-        headers: {'Content-Type': 'application/json'},
+        headers: _headers,
         body: json.encode({
           'title': title,
           'link': link,
@@ -237,7 +261,7 @@ class ApiService {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/delete-gift'),
-        headers: {'Content-Type': 'application/json'},
+        headers: _headers,
         body: json.encode({'id': id}),
       );
       if (response.statusCode == 200) {
@@ -251,7 +275,7 @@ class ApiService {
 
   static Future<Map<String, dynamic>> getGoalsAndRewards() async {
     try {
-      final response = await http.get(Uri.parse('$baseUrl/get-goals'));
+      final response = await http.get(Uri.parse('$baseUrl/get-goals'), headers: _headers);
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         final List<dynamic> goalsData = data['goals'] ?? [];
@@ -272,7 +296,7 @@ class ApiService {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/rollover-salary'),
-        headers: {'Content-Type': 'application/json'},
+        headers: _headers,
         body: json.encode({'leftover': leftover}),
       );
       if (response.statusCode == 200) {
@@ -286,7 +310,7 @@ class ApiService {
 
   static Future<bool> resetDatabase() async {
     try {
-      final response = await http.post(Uri.parse('$baseUrl/reset'));
+      final response = await http.post(Uri.parse('$baseUrl/reset'), headers: _headers);
       if (response.statusCode == 200) {
         return true;
       }
