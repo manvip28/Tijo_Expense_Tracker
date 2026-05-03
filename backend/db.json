@@ -1,0 +1,42 @@
+{
+    "expenses": [],
+    "limits": {
+        "Monthly Budget": 40000.0,
+        "Food": 3000.0,
+        "Skin Care": 5000.0,
+        "Transport": 1000.0
+    },
+    "goals": [
+        {
+            "id": 1,
+            "title": "Stay within Budget",
+            "description": "Spend less than overall budget this month",
+            "target": "Overall Budget",
+            "status": "Achieved"
+        },
+        {
+            "id": 2,
+            "title": "Control Dining Out",
+            "description": "Keep food expenses below limit",
+            "target": "Food",
+            "status": "Achieved"
+        }
+    ],
+    "rewards": [
+        {
+            "id": 1,
+            "title": "Fine Dining Voucher",
+            "condition": "Achieve 'Stay within Budget' goal",
+            "unlocked": true
+        },
+        {
+            "id": 2,
+            "title": "New Gadget / Headphones",
+            "condition": "Keep all category spending within limits",
+            "unlocked": true
+        }
+    ],
+    "savings": 0.0,
+    "gifts": [],
+    "salary": 30000.0
+}

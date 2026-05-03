@@ -1,0 +1,22 @@
+# Flutter
+.dart_tool/
+build/
+frontend/.dart_tool/
+frontend/build/
+.idea/
+.flutter-plugins-dependencies
+# Python
+__pycache__/
+*.pyc
+
+# Env
+.env
+*.env
+backend/.env
+
+# Logs
+*.log
+sync_log.txt
+
+# Credentials
+service_account.json
