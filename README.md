@@ -69,6 +69,6 @@ Tijo_Expense_Tracker/
 
 ---
 
-## 🚀 Setup & Deployment
+## Setup & Deployment
 
 To build the app for yourself or deploy the backend, please refer to our detailed **[Setup Guide (setup.md)](./setup.md)**.
